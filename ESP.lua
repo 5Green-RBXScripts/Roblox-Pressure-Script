@@ -1,12 +1,11 @@
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local ESPEnabled = false
-local highlights = {} -- Table to keep track of highlights
 
 local function createHighlight(character)
     local highlight = Instance.new("Highlight")
     highlight.Adornee = character
-    highlight.FillColor = Color3.new(1, 0, 0) -- Change color as needed
+    highlight.FillColor = Color3.new(1, 0, 0) -- Change the color as needed
     highlight.FillTransparency = 0.5
     highlight.OutlineColor = Color3.new(1, 1, 1)
     highlight.OutlineTransparency = 0.5
@@ -18,24 +17,23 @@ local function loadESP(player)
     if player ~= LocalPlayer then
         local character = player.Character or player.CharacterAdded:Wait()
         local highlight = createHighlight(character)
-        highlights[player.UserId] = highlight
 
         player.CharacterAdded:Connect(function(newCharacter)
-            -- Remove old highlight if exists
-            if highlights[player.UserId] then
-                highlights[player.UserId]:Destroy()
-            end
+            highlight:Destroy()
             highlight = createHighlight(newCharacter)
-            highlights[player.UserId] = highlight
         end)
     end
 end
 
 local function unloadESP(player)
     if player ~= LocalPlayer then
-        if highlights[player.UserId] then
-            highlights[player.UserId]:Destroy()
-            highlights[player.UserId] = nil
+        local character = player.Character
+        if character then
+            for _, child in ipairs(character:GetChildren()) do
+                if child:IsA("Highlight") then
+                    child:Destroy()
+                end
+            end
         end
     end
 end
@@ -47,15 +45,8 @@ local function toggleESP(enabled)
             loadESP(player)
         end
 
-        Players.PlayerAdded:Connect(function(player)
-            if ESPEnabled then
-                loadESP(player)
-            end
-        end)
-
-        Players.PlayerRemoving:Connect(function(player)
-            unloadESP(player)
-        end)
+        Players.PlayerAdded:Connect(loadESP)
+        Players.PlayerRemoving:Connect(unloadESP)
     else
         for _, player in ipairs(Players:GetPlayers()) do
             unloadESP(player)
@@ -63,7 +54,7 @@ local function toggleESP(enabled)
     end
 end
 
-toggleESP(false) -- Set to false initially
+toggleESP(true) -- Start with ESP enabled, or set to false if you want it off by default.
 
 -- Example of connecting to a toggle button:
 -- ToggleButton:OnChanged(function(value)
