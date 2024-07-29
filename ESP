@@ -89,7 +89,7 @@ end
 
 local UnloadCharacter = function(v)
     local vHolder = Holder:FindFirstChild(v.Name)
-    if vHolder and (vHolder:FindFirstChild(v.Name .. "Box") ~= nil or vHolder:FindFirstChild(v.Name .. "NameTag") ~= nil) then
+    if vHolder then
         vHolder:ClearAllChildren()
     end
     if v.Character:FindFirstChild("GetReal") then
