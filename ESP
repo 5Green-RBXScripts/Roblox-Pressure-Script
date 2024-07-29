@@ -1,6 +1,7 @@
 _G.FriendColor = Color3.fromRGB(0, 0, 255)
 _G.EnemyColor = Color3.fromRGB(255, 0, 0)
 _G.UseTeamColor = true
+_G.ESPEnabled = false
 
 local Holder = Instance.new("Folder", game.CoreGui)
 Holder.Name = "ESP"
@@ -37,7 +38,8 @@ local LoadCharacter = function(v)
     if not _G.ESPEnabled then return end
     repeat wait() until v.Character ~= nil
     v.Character:WaitForChild("Humanoid")
-    local vHolder = Holder:FindFirstChild(v.Name)
+    local vHolder = Holder:FindFirstChild(v.Name) or Instance.new("Folder", Holder)
+    vHolder.Name = v.Name
     vHolder:ClearAllChildren()
     
     local b = Box:Clone()
@@ -58,7 +60,6 @@ local LoadCharacter = function(v)
     b.Color3 = Color3.new(v.TeamColor.r, v.TeamColor.g, v.TeamColor.b)
     t.Tag.TextColor3 = Color3.new(v.TeamColor.r, v.TeamColor.g, v.TeamColor.b)
 
-    -- Apply the full-body highlight
     if not v.Character:FindFirstChild("GetReal") then
         local highlight = Instance.new("Highlight")
         highlight.Name = "GetReal"
@@ -77,8 +78,6 @@ local LoadCharacter = function(v)
     local UpdateNameTag = function()
         if not pcall(function()
             v.Character.Humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
-            local maxh = math.floor(v.Character.Humanoid.MaxHealth)
-            local h = math.floor(v.Character.Humanoid.Health)
         end) then
             Update:Disconnect()
         end
@@ -165,3 +164,22 @@ function esp(target, color)
         end
     end
 end
+
+-- Toggle function to enable or disable ESP
+local ToggleESP = function(enabled)
+    _G.ESPEnabled = enabled
+    if not enabled then
+        for _, player in pairs(game.Players:GetPlayers()) do
+            UnloadCharacter(player)
+        end
+    else
+        for _, player in pairs(game.Players:GetPlayers()) do
+            LoadCharacter(player)
+        end
+    end
+end
+
+-- Connect the toggle button
+Toggle:OnChanged(function(value)
+    ToggleESP(value)
+end)
