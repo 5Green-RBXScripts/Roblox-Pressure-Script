@@ -54,7 +54,7 @@ local function toggleESP(enabled)
     end
 end
 
-toggleESP(true) -- Start with ESP enabled, or set to false if you want it off by default.
+toggleESP(false) -- Start with ESP enabled, or set to false if you want it off by default.
 
 -- Example of connecting to a toggle button:
 -- ToggleButton:OnChanged(function(value)
