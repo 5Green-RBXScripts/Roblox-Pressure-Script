@@ -92,7 +92,7 @@ local UnloadCharacter = function(v)
     if vHolder then
         vHolder:ClearAllChildren()
     end
-    if v.Character:FindFirstChild("GetReal") then
+    if v.Character and v.Character:FindFirstChild("GetReal") then
         v.Character.GetReal:Destroy()
     end
 end
