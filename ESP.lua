@@ -1,13 +1,14 @@
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
+local ESPEnabled = false
 local highlights = {}
 
 local function createHighlight(character)
     local highlight = Instance.new("Highlight")
     highlight.Adornee = character
-    highlight.FillColor = Color3.new(1, 0, 0) -- Change color as needed
+    highlight.FillColor = Color3.new(0.3, 0.5, 0.3) -- Change color as needed
     highlight.FillTransparency = 0.5
-    highlight.OutlineColor = Color3.new(1, 1, 1)
+    highlight.OutlineColor = Color3.new(0, 1, 0)
     highlight.OutlineTransparency = 0.5
     highlight.Parent = character
     return highlight
@@ -46,14 +47,16 @@ local function toggleESP(enabled)
 
         Players.PlayerAdded:Connect(loadESP)
         Players.PlayerRemoving:Connect(unloadESP)
+
+        ESPEnabled = true
     else
         for _, player in ipairs(Players:GetPlayers()) do
             unloadESP(player)
         end
+
+        ESPEnabled = false
     end
 end
 
--- Usage example: Call this function to toggle the ESP on or off.
-toggleESP(true) -- Set to false if you want it off by default.
-
--- Make sure to include the toggle handling in your main UI script.
+-- Call this function to toggle the ESP on or off as needed.
+toggleESP(false) -- Set to false to turn it off by default.
