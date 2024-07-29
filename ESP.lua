@@ -1,7 +1,6 @@
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
-local ESPEnabled = false
-local highlights = {} -- Table to keep track of highlights
+local highlights = {}
 
 local function createHighlight(character)
     local highlight = Instance.new("Highlight")
@@ -21,7 +20,6 @@ local function loadESP(player)
         highlights[player.UserId] = highlight
 
         player.CharacterAdded:Connect(function(newCharacter)
-            -- Remove old highlight if exists
             if highlights[player.UserId] then
                 highlights[player.UserId]:Destroy()
             end
@@ -41,21 +39,13 @@ local function unloadESP(player)
 end
 
 local function toggleESP(enabled)
-    ESPEnabled = enabled
     if enabled then
         for _, player in ipairs(Players:GetPlayers()) do
             loadESP(player)
         end
 
-        Players.PlayerAdded:Connect(function(player)
-            if ESPEnabled then
-                loadESP(player)
-            end
-        end)
-
-        Players.PlayerRemoving:Connect(function(player)
-            unloadESP(player)
-        end)
+        Players.PlayerAdded:Connect(loadESP)
+        Players.PlayerRemoving:Connect(unloadESP)
     else
         for _, player in ipairs(Players:GetPlayers()) do
             unloadESP(player)
@@ -63,9 +53,7 @@ local function toggleESP(enabled)
     end
 end
 
-toggleESP(false) -- Set to false initially
+-- Usage example: Call this function to toggle the ESP on or off.
+toggleESP(true) -- Set to false if you want it off by default.
 
--- Example of connecting to a toggle button:
--- ToggleButton:OnChanged(function(value)
---     toggleESP(value)
--- end)
+-- Make sure to include the toggle handling in your main UI script.
