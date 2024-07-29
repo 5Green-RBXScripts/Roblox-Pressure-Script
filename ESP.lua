@@ -6,7 +6,7 @@ local highlights = {}
 local function createHighlight(character)
     local highlight = Instance.new("Highlight")
     highlight.Adornee = character
-    highlight.FillColor = Color3.new(0.3, 0.5, 0.3) -- Change color as needed
+    highlight.FillColor = Color3.new(0.3, 0.5, 0.3)
     highlight.FillTransparency = 0.5
     highlight.OutlineColor = Color3.new(0, 1, 0)
     highlight.OutlineTransparency = 0.5
@@ -58,5 +58,6 @@ local function toggleESP(enabled)
     end
 end
 
--- Call this function to toggle the ESP on or off as needed.
-toggleESP(false) -- Set to false to turn it off by default.
+return {
+    toggleESP = toggleESP
+}
